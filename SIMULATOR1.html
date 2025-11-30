@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MethanoMine — Capturing Methane. Empowering Villages.</title>
+  <meta name="description" content="MethanoMine — village-scale methane capture, biogas & biomass conversion. Interactive demo & investor site." />
+  <!-- Fonts & Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{--bg:#f7faf7;--card:#ffffff;--accent:#2d8f6f;--muted:#6b7280;--glass: rgba(255,255,255,0.6)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,'Helvetica Neue',Arial; background:linear-gradient(180deg,#f3f8f5 0%, #eef6f1 100%);color:#0f172a}
+    header{position:sticky;top:0;background:rgba(255,255,255,0.85);backdrop-filter:blur(6px);box-shadow:0 4px 18px rgba(6,12,20,0.06);z-index:40}
+    .nav{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px 18px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#60c9a5);display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+    nav a{margin:0 10px;color:var(--muted);text-decoration:none;font-weight:600}
+    nav a.active{color:var(--accent)}
+    .hero{max-width:1200px;margin:28px auto;padding:36px;border-radius:14px;display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center}
+    .hero-card{background:var(--card);padding:28px;border-radius:12px;box-shadow:0 8px 30px rgba(16,24,40,0.06)}
+    h1{margin:0 0 12px;font-size:28px}
+    .lead{color:var(--muted);margin-bottom:18px}
+    .cta{display:flex;gap:12px}
+    .btn{padding:10px 14px;border-radius:8px;background:var(--accent);color:white;border:none;cursor:pointer;font-weight:700}
+    .btn.outline{background:transparent;border:2px solid var(--accent);color:var(--accent)}
+    .small{font-size:14px}
+
+    /* Sections */
+    .section{max-width:1200px;margin:24px auto;padding:20px}
+    .grid{display:grid;gap:16px}
+    .cards{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+    .card{background:var(--card);padding:18px;border-radius:10px;box-shadow:0 6px 18px rgba(10,20,30,0.04)}
+
+    /* Simulator */
+    .sim{display:flex;gap:18px;align-items:center}
+    .sim input, .sim select{padding:8px;border-radius:8px;border:1px solid #e6eef0}
+
+    /* Village map */
+    .village{display:grid;grid-template-columns:1fr 360px;gap:16px}
+    .map{background:linear-gradient(180deg,#e8fbf0,#f6fff6);height:420px;border-radius:12px;padding:16px;position:relative}
+    .popup{position:absolute;background:white;padding:10px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.08);display:none}
+
+    /* Chatbot */
+    .chat-button{position:fixed;right:18px;bottom:18px;border-radius:999px;background:var(--accent);color:white;width:64px;height:64px;display:grid;place-items:center;box-shadow:0 10px 30px rgba(45,143,111,0.28);z-index:60;border:none}
+    .chat-window{position:fixed;right:18px;bottom:92px;width:360px;height:520px;background:var(--card);border-radius:12px;box-shadow:0 18px 40px rgba(10,20,30,0.12);display:flex;flex-direction:column;overflow:hidden;z-index:60}
+    .chat-header{background:linear-gradient(90deg,var(--accent),#57c1a0);color:white;padding:12px;display:flex;align-items:center;gap:10px}
+    .chat-body{flex:1;padding:12px;overflow:auto}
+    .msg{margin:8px 0;padding:8px 10px;border-radius:10px;max-width:78%}
+    .msg.user{background:#e6fff3;margin-left:auto}
+    .msg.bot{background:#f0faf6}
+    .chat-input{display:flex;padding:10px;border-top:1px solid #eef4ee}
+    .chat-input input{flex:1;padding:8px;border-radius:8px;border:1px solid #e5eee6}
+
+    /* Contact form */
+    form{display:grid;gap:10px}
+    input[type=file]{padding:6px}
+
+    footer{margin-top:40px;padding:28px 18px;background:transparent}
+    .footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+
+    /* Responsive */
+    @media (max-width:900px){.hero{grid-template-columns:1fr;}.village{grid-template-columns:1fr}.chat-window{right:10px;width:320px}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <div class="brand">
+        <div class="logo">M</div>
+        <div>
+          <div style="font-weight:800">MethanoMine</div>
+          <div style="font-size:12px;color:var(--muted)">Capturing Methane. Empowering Villages.</div>
+        </div>
+      </div>
+      <nav>
+        <a href="#home" class="nav-link active">Home</a>
+        <a href="#solution" class="nav-link">Solution</a>
+        <a href="#technology" class="nav-link">Technology</a>
+        <a href="#simulator" class="nav-link">Simulator</a>
+        <a href="#impact" class="nav-link">Impact</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="home" class="hero section">
+    <div class="hero-card">
+      <h1>MethanoMine — Capturing Methane. Empowering Villages.</h1>
+      <p class="lead">Village-scale methane capture and conversion system. MethanoPods capture CH₄ from livestock and rice paddies and convert it into clean energy, fertilizer, and earnings.</p>
+      <div class="cta">
+        <button class="btn" onclick="navigateTo('solution')">Explore Technology</button>
+        <button class="btn outline" onclick="navigateTo('simulator')">Try Simulator</button>
+      </div>
+      <div style="margin-top:18px;font-size:13px;color:var(--muted)">Demo site — interactive prototype for presentations and investor pitches.</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card" style="padding:18px;align-self:stretch">
+        <strong>Quick Stats</strong>
+        <div style="display:flex;gap:12px;margin-top:12px">
+          <div style="flex:1;background:linear-gradient(180deg,#f3fff6,#ffffff);padding:10px;border-radius:8px;text-align:center">
+            <div style="font-size:20px;font-weight:800">50–70%</div>
+            <div style="color:var(--muted);font-size:13px">Expected CH₄ reduction</div>
+          </div>
+          <div style="flex:1;background:linear-gradient(180deg,#fff7f0,#ffffff);padding:10px;border-radius:8px;text-align:center">
+            <div style="font-size:20px;font-weight:800">Multi</div>
+            <div style="color:var(--muted);font-size:13px">Outputs: Biogas, Electricity, Biomass</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:12px;display:flex;flex-direction:column;gap:10px">
+        <strong>Models</strong>
+        <div style="display:flex;gap:10px">
+          <div style="flex:1;padding:10px;border-radius:8px;background:linear-gradient(180deg,#fff,#f7fff7);text-align:center">MicroPod<br><small class="small">1–5 cows</small></div>
+          <div style="flex:1;padding:10px;border-radius:8px;background:linear-gradient(180deg,#fff,#f7fff7);text-align:center">VillagePod<br><small class="small">~50 households</small></div>
+          <div style="flex:1;padding:10px;border-radius:8px;background:linear-gradient(180deg,#fff,#f7fff7);text-align:center">ClusterPod<br><small class="small">Community grid</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLUTION -->
+  <section id="solution" class="section">
+    <div class="grid cards">
+      <div class="card">
+        <h3>How MethanoMine Works</h3>
+        <ol style="margin:8px 0 0 18px;color:var(--muted)">
+          <li>Capture methane from dung pits, covered lagoons and rice paddies.</li>
+          <li>Transport gas to MethanoPod via low-pressure piping.</li>
+          <li>Convert using microbe reactors or burn as biogas for electricity/cooking.</li>
+          <li>Use biomass as compost/fish feed and monetize carbon credits.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>MethanoPod — Features</h3>
+        <ul style="color:var(--muted)">
+          <li>Modular, solar-powered control unit</li>
+          <li>Gas sensors & remote IoT telemetry</li>
+          <li>Plug-and-play piping and skids</li>
+          <li>Safe flame arrestors & pressure relief</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>3D Model (interactive)</h3>
+        <div style="height:220px;display:grid;place-items:center">
+          <!-- Simple CSS rotator as placeholder -->
+          <div id="pod" style="width:200px;height:140px;background:linear-gradient(135deg,var(--accent),#60c9a5);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;transform:rotateY(0deg);transition:transform .6s;cursor:pointer" onclick="rotatePod()">MethanoPod</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECHNOLOGY -->
+  <section id="technology" class="section">
+    <div class="grid" style="grid-template-columns:1fr 360px;gap:18px">
+      <div class="card">
+        <h3>Technology Pipeline</h3>
+        <div style="display:flex;gap:12px;flex-direction:column">
+          <div style="display:flex;gap:12px;align-items:center">
+            <div style="width:8px;height:8px;background:var(--accent);border-radius:99px"></div>
+            <div>
+              <strong>Capture</strong>
+              <div style="color:var(--muted);font-size:13px">Covered digesters, bio-covers, AWD in rice fields</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <div style="width:8px;height:8px;background:#ffa500;border-radius:99px"></div>
+            <div>
+              <strong>Transport</strong>
+              <div style="color:var(--muted);font-size:13px">Low-pressure piping, gas buffers, sensor loops</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <div style="width:8px;height:8px;background:#6b7280;border-radius:99px"></div>
+            <div>
+              <strong>Convert</strong>
+              <div style="color:var(--muted);font-size:13px">Methanotroph reactors, small CHP generators, biogas burners</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Sensor Dashboard</h3>
+        <canvas id="sensorChart" style="max-width:100%"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIMULATOR -->
+  <section id="simulator" class="section">
+    <div class="card">
+      <h3>Methane Reduction Simulator</h3>
+      <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center">
+        <div style="min-width:260px">
+          <label>Number of cows</label>
+          <input id="cows" type="number" value="10" min="0">
+        </div>
+        <div style="min-width:260px">
+          <label>Rice field area (hectares)</label>
+          <input id="area" type="number" value="1" min="0" step="0.1">
+        </div>
+        <div>
+          <label>Pod type</label>
+          <select id="podType">
+            <option value="micro">MicroPod</option>
+            <option value="village" selected>VillagePod</option>
+            <option value="cluster">ClusterPod</option>
+          </select>
+        </div>
+        <div style="align-self:end">
+          <button class="btn" onclick="runSim()">Run Simulation</button>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:18px;margin-top:18px;align-items:center">
+        <div style="flex:1" class="card">
+          <div style="font-size:20px;font-weight:800" id="ch4">--</div>
+          <div style="color:var(--muted)">Estimated CH₄ captured / day</div>
+        </div>
+        <div style="flex:1" class="card">
+          <div style="font-size:20px;font-weight:800" id="energy">--</div>
+          <div style="color:var(--muted)">Estimated usable energy (kWh/day)</div>
+        </div>
+        <div style="flex:1" class="card">
+          <div style="font-size:20px;font-weight:800" id="credits">--</div>
+          <div style="color:var(--muted)">Estimated carbon credits / year</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPACT -->
+  <section id="impact" class="section">
+    <div class="grid cards">
+      <div class="card">
+        <h3>Environmental Impact</h3>
+        <canvas id="impactChart"></canvas>
+      </div>
+      <div class="card">
+        <h3>Roadmap</h3>
+        <ul style="color:var(--muted)">
+          <li>2025 — Prototype & lab tests</li>
+          <li>2026 — Pilot village deployment</li>
+          <li>2027 — 100-village scale</li>
+          <li>2028 — State-level & export</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Downloads</h3>
+        <button class="btn" onclick="downloadBP()"><i class="fa fa-download"></i> Download Business Plan (sample)</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section">
+    <div class="grid" style="grid-template-columns:1fr 360px;gap:18px">
+      <div class="card">
+        <h3>Contact Us</h3>
+        <form id="contactForm" onsubmit="submitContact(event)">
+          <input required placeholder="Full name" id="name">
+          <input required type="email" placeholder="Email" id="email">
+          <input placeholder="Phone" id="phone">
+          <select id="purpose">
+            <option>General inquiry</option>
+            <option>Investor</option>
+            <option>Researcher</option>
+            <option>Rural customer</option>
+            <option>Government / NGO</option>
+          </select>
+          <input type="file" id="doc" />
+          <textarea id="message" placeholder="Message" style="min-height:120px;padding:10px;border-radius:8px;border:1px solid #e6eef0"></textarea>
+          <button class="btn" type="submit">Send message</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>Office & Quick Contact</h3>
+        <p style="color:var(--muted)">MethanoMine (demo)
+        <br>Dayalbagh region — Demo center<br>
+        <b>Email:</b> demo@methanomine.org<br>
+        <b>Phone:</b> +91 70000 00000
+        </p>
+        <div style="margin-top:12px">
+          <button class="btn outline" onclick="openWhatsApp()"><i class="fa fa-phone"></i> WhatsApp</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div style="color:var(--muted)">© MethanoMine 2025 — Demo site</div>
+      <div style="color:var(--muted)">Made for pitch & demo</div>
+    </div>
+  </footer>
+
+  <!-- Chatbot -->
+  <button class="chat-button" id="chatBtn" title="Chat with MethanoBot"><i class="fa fa-robot"></i></button>
+  <div class="chat-window" id="chatWindow" style="display:none">
+    <div class="chat-header">
+      <div style="font-weight:800">MethanoBot</div>
+      <div style="font-size:12px;color:white;opacity:.9">Ask about the tech, simulator, or contact.</div>
+    </div>
+    <div class="chat-body" id="chatBody">
+      <div class="msg bot">Hello! I'm MethanoBot — ask me about MethanoPods, simulation inputs, or the business model.</div>
+    </div>
+    <div class="chat-input">
+      <input id="chatInput" placeholder="Type a question..." onkeydown="if(event.key==='Enter') sendChat()">
+      <button class="btn" onclick="sendChat()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    // Simple navigation highlight
+    document.querySelectorAll('.nav-link').forEach(a=>a.addEventListener('click',function(e){
+      document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));
+      this.classList.add('active');
+      document.querySelectorAll('section').forEach(s=>s.style.paddingTop='20px');
+    }));
+
+    function navigateTo(id){location.hash = '#'+id; document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active')); document.querySelector('[href="#'+id+'"]').classList.add('active'); window.scrollTo({top:document.getElementById(id).offsetTop-70,behavior:'smooth'});
+    }
+
+    // Pod rotation
+    let rotated=false; function rotatePod(){rotated=!rotated;document.getElementById('pod').style.transform = rotated? 'rotateY(180deg)':'rotateY(0deg)'}
+
+    // Sensor chart sample
+    const ctx = document.getElementById('sensorChart').getContext('2d');
+    const sensorChart = new Chart(ctx,{type:'line',data:{labels:['0s','10s','20s','30s','40s','50s','60s'],datasets:[{label:'CH4 ppm',data:[1200,980,870,760,720,700,680],fill:true,tension:0.4}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+
+    // Impact chart
+    const ic = document.getElementById('impactChart').getContext('2d');
+    const impactChart = new Chart(ic,{type:'doughnut',data:{labels:['CH4 reduced','Remaining emissions'],datasets:[{data:[65,35]}]},options:{responsive:true}});
+
+    // Simulator logic
+    function runSim(){
+      const cows = Number(document.getElementById('cows').value||0);
+      const area = Number(document.getElementById('area').value||0);
+      const pod = document.getElementById('podType').value;
+      // Simple model: cow produces 200 g CH4/day (approx for demo). Rice paddies per ha produce 1000 g CH4/day
+      const ch4_from_cows = cows * 0.2; // kg/day
+      const ch4_from_rice = area * 1.0; // kg/day
+      let capture_eff = pod==='micro'?0.5: (pod==='village'?0.65:0.7);
+      const captured = (ch4_from_cows + ch4_from_rice) * capture_eff; // kg/day
+      const energy_kwh = captured * 11.1; // rough: 1 kg CH4 ~ 13.9 kWh of energy (lower heating), we use 11.1 for efficiency
+      const credits = captured * 0.27 * 365; // tCO2e per kg CH4 * price placeholder -> kg CH4 * 0.27 = kgCO2e saved; multiplier to credits simulate
+      document.getElementById('ch4').innerText = captured.toFixed(2)+' kg/day';
+      document.getElementById('energy').innerText = energy_kwh.toFixed(1)+' kWh/day';
+      document.getElementById('credits').innerText = Math.round(credits)+' credits/yr';
+    }
+    runSim();
+
+    // Contact form
+    function submitContact(e){e.preventDefault(); const name=document.getElementById('name').value; const email=document.getElementById('email').value; const purpose=document.getElementById('purpose').value; alert('Thanks '+name+' — we received your message for "'+purpose+'". (This demo simulates submission.)'); document.getElementById('contactForm').reset();}
+    function openWhatsApp(){window.open('https://wa.me/917000000000','_blank')}
+
+    // Download business plan (sample text)
+    function downloadBP(){
+      const content = `MethanoMine — Sample Business Plan\n\nProblem: Agricultural methane...`;
+      const blob = new Blob([content], {type:'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=url; a.download='MethanoMine-BusinessPlan-sample.txt'; a.click(); URL.revokeObjectURL(url);
+    }
+
+    // Chatbot behavior (simple rules)
+    const chatBtn=document.getElementById('chatBtn'); const chatWin=document.getElementById('chatWindow'); const chatBody=document.getElementById('chatBody');
+    chatBtn.addEventListener('click',()=>{chatWin.style.display = chatWin.style.display==='none'?'flex':'none';});
+    function sendChat(){const input=document.getElementById('chatInput');const v=input.value.trim(); if(!v) return; appendMsg(v,'user'); input.value=''; setTimeout(()=>{replyBot(v)},600);}
+    function appendMsg(text,who){const d=document.createElement('div');d.className='msg '+(who==='user'?'user':'bot');d.innerText=text;chatBody.appendChild(d);chatBody.scrollTop=chatBody.scrollHeight}
+    function replyBot(q){q=q.toLowerCase(); if(q.includes('simulate')||q.includes('simulator')) return appendMsg('Use the Simulator page — enter cows, field area and choose a Pod to see estimated CH₄ captured and energy produced.');
+      if(q.includes('pod')||q.includes('methanopod')) return appendMsg('MethanoPods are modular units: Micro, Village and Cluster scale. Each includes sensors, solar controller and conversion/reactor module.');
+      if(q.includes('invest')||q.includes('investor')) return appendMsg('We recommend the Business Model page. Revenue streams include biogas sales, fertilizer, carbon credits and subsidies. For investor material, use the Download section.');
+      if(q.includes('contact')||q.includes('email')) return appendMsg('Visit the Contact page and choose "Investor" or "Rural customer" in the purpose dropdown — you can attach documents there.');
+      appendMsg('Thanks — for detailed queries, email demo@methanomine.org or use the Contact form.'); }
+
+    // Hash-based simple routing to open sections
+    window.addEventListener('hashchange', ()=>{const id=location.hash.replace('#','')||'home'; document.getElementById(id)?.scrollIntoView({behavior:'smooth'});});
+
+    // Tiny UX: enable enter to submit contact if focused
+    document.getElementById('contactForm').addEventListener('keydown',function(e){ if(e.key==='Enter' && e.target.tagName!=='TEXTAREA') { e.preventDefault(); submitContact(e); } });
+
+  </script>
+</body>
+</html>
+
